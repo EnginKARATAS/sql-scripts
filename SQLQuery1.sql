@@ -20,7 +20,7 @@ GO
 create table SatisTemsilcisi(
 	personelNo int,
 	bolge varchar(100),
-	CONSTRAINT fk_danisman_personel FOREIGN KEY (personelNo) REFERENCES Personel(personelNo)
+	CONSTRAINT fk_satisTemsilcisi_personel FOREIGN KEY (personelNo) REFERENCES Personel(personelNo)
 );
 
 GO
