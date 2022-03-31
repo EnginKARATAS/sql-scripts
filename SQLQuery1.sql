@@ -1,46 +1,46 @@
-create table Personel(
-	personelNo int identity(1,1) not null,
-	adi varchar(25) not null,
-	soyadi varchar(45) not null,
-	personelTipi char(1) not null,
+	create table Personel(
+		personelNo int identity(1,1) not null,
+		adi varchar(25) not null,
+		soyadi varchar(45) not null,
+		personelTipi char(1) not null,
 
-	CONSTRAINT pk_personel PRIMARY KEY(personelNo)
-);
+		CONSTRAINT pk_personel PRIMARY KEY(personelNo)
+	);
 
-GO 
+	GO 
 
-create table Danisman(
-	personelNo int,
-	sirket varchar(100),
-	CONSTRAINT fk_danisman_personel FOREIGN KEY (personelNo) REFERENCES Personel(personelNo)
-);
+	create table Danisman(
+		personelNo int,
+		sirket varchar(100),
+		CONSTRAINT fk_danisman_personel FOREIGN KEY (personelNo) REFERENCES Personel(personelNo)
+	);
 
-GO
+	GO
 
-create table SatisTemsilcisi(
-	personelNo int,
-	bolge varchar(100),
-	CONSTRAINT fk_satisTemsilcisi_personel FOREIGN KEY (personelNo) REFERENCES Personel(personelNo)
-);
+	create table SatisTemsilcisi(
+		personelNo int,
+		bolge varchar(100),
+		CONSTRAINT fk_satisTemsilcisi_personel FOREIGN KEY (personelNo) REFERENCES Personel(personelNo)
+	);
 
-GO
+	GO
 
-ALTER TABLE Personel
- 	ADD tc varchar(11) not null
+	ALTER TABLE Personel
+		ADD tc varchar(11) not null
 
-ALTER TABLE Personel
-	ADD telefon nvarchar(12) not null
+	ALTER TABLE Personel
+		ADD telefon nvarchar(12) not null
 
-ALTER TABLE Personel
- 	ADD adres nvarchar(500)
+	ALTER TABLE Personel
+		ADD adres nvarchar(500)
 
-GO
+	GO
 
-CREATE table Bolge(
-	bolgeId int identity(1,1),
-	bolgeAd nvarchar(30),
-	CONSTRAINT pk_bolge PRIMARY KEY (bolgeId)
-);
+	CREATE table Bolge(
+		bolgeId int identity(1,1),
+		bolgeAd nvarchar(30),
+		CONSTRAINT pk_bolge PRIMARY KEY (bolgeId)
+	);
 
-ALTER TABLE Bolge
-ADD personelNo INT FOREIGN KEY (personelNo) REFERENCES Personel(personelNo)
+	ALTER TABLE Bolge
+	ADD personelNo INT FOREIGN KEY (personelNo) REFERENCES Personel(personelNo)
