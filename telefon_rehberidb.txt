@@ -1,0 +1,93 @@
+--önce database oluşturalım Seçerek çalıştıralım hepsi aynı anda calısmaz.;
+Create Database tel2;
+go
+--oluşturduktan sonra tabloları oluşturalım. seçerek çalıştıralın.
+use tel2;
+go
+/*Tablolar*/
+CREATE TABLE [dbo].[bolum](
+	[bolum_id] [int] IDENTITY(1,1) NOT NULL,
+	[bolum_adi] [varchar](50) NULL,
+ CONSTRAINT [PK_bolum] PRIMARY KEY CLUSTERED 
+(
+	[bolum_id] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY];
+
+CREATE TABLE [dbo].[telefon](
+	[telefon_id] [int] IDENTITY(1,1) NOT NULL,
+	[telefon] [varchar](50) NULL,
+	[rehber_id] [int] NULL,
+ CONSTRAINT [PK_telefon] PRIMARY KEY CLUSTERED 
+(
+	[telefon_id] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY];
+
+CREATE TABLE [dbo].[rehber](
+	[rehber_id] [int] IDENTITY(1,1) NOT NULL,
+	[ad] [varchar](50) NULL,
+	[soyad] [varchar](50) NULL,
+	[bolum_id] [int] NULL,
+	[silindimi] [tinyint] NULL,
+	[yaratma_tarihi] [datetime] NULL,
+	[degistirme_tarihi] [datetime] NULL,
+ CONSTRAINT [PK_rehber] PRIMARY KEY CLUSTERED 
+(
+	[rehber_id] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY];
+
+CREATE TABLE [dbo].[kullanici](
+	[kul_id] [int] IDENTITY(1,1) NOT NULL,
+	[kul_adi] [varchar](50) NULL,
+	[sifre] [varchar](50) NULL,
+	[rol] [varchar](1) NULL,
+ CONSTRAINT [PK_kullanici] PRIMARY KEY CLUSTERED 
+(
+	[kul_id] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY];
+/*Tablolar Bitti*/
+go
+--daha sonra triggerları seçerek calıstıralım.
+
+/*Triggerlar*/
+CREATE TRIGGER [dbo].[trg_AFTER_guncelleme]
+ON [dbo].[rehber]
+AFTER UPDATE
+AS 
+Begin
+update rehber set degistirme_tarihi=GETDATE() where rehber_id in (select rehber_id from deleted)
+End;
+go
+CREATE TRIGGER [dbo].[trg_AFTER_kayitekleme]
+ON [dbo].[rehber]
+AFTER INSERT
+AS 
+Begin
+update rehber set yaratma_tarihi=GETDATE() where rehber_id = (select rehber_id from inserted)
+End;
+/*Triggerlar Bitti.*/
+
+/*verileri ekleyelim*/
+
+insert into bolum (bolum_adi) VALUES ('Bilgisayar');
+insert into bolum (bolum_adi) VALUES ('Muhasebe');
+insert into bolum (bolum_adi) VALUES ('Halkla İlişkiler');
+
+insert into kullanici (kul_adi,sifre,rol) VALUES ('admin','123','A');
+insert into kullanici (kul_adi,sifre,rol) VALUES ('user','123','G');
+insert into kullanici (kul_adi,sifre,rol) VALUES ('demo','123','D');
+
+insert into rehber (ad,soyad,bolum_id,silindimi,yaratma_tarihi,degistirme_tarihi) VALUES ('metin','tekin',1,0,NULL,NULL);
+insert into rehber (ad,soyad,bolum_id,silindimi,yaratma_tarihi,degistirme_tarihi) VALUES ('feyyaz','uçar',1,0,NULL,NULL);
+insert into rehber (ad,soyad,bolum_id,silindimi,yaratma_tarihi,degistirme_tarihi) VALUES ('ali','gültekin',2,0,NULL,NULL);
+insert into rehber (ad,soyad,bolum_id,silindimi,yaratma_tarihi,degistirme_tarihi) VALUES ('test3','test3',2,0,NULL,NULL);
+insert into rehber (ad,soyad,bolum_id,silindimi,yaratma_tarihi,degistirme_tarihi) VALUES ('demo2','test trigger',3,0,NULL,NULL);
+
+insert into telefon (telefon,rehber_id) VALUEs ('123',1);
+insert into telefon (telefon,rehber_id) VALUEs ('1234',1);
+insert into telefon (telefon,rehber_id) VALUEs ('456',3);
+insert into telefon (telefon,rehber_id) VALUEs ('4444',2);
+insert into telefon (telefon,rehber_id) VALUEs ('123456',2);
